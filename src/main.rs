@@ -1,5 +1,4 @@
-mod headline;
-mod slurp;
+mod start_day;
 mod day1;
 mod day2;
 

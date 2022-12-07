@@ -1,12 +1,10 @@
 pub fn execute() {
-    crate::headline::print_day(1);
+    let inputs = crate::start_day::setup(1);
 
     let mut sum = 0u64;
     let mut sums: Vec<u64> = Vec::new();
 
-    let lines = crate::slurp::read_lines("inputs/1.txt").expect("Couldn't get day 1 input");
-
-    for line in lines {
+    for line in inputs {
         let text = line.expect("Not a valid string");
         if let Ok(number) = text.parse::<u64>() {
             sum += number;
