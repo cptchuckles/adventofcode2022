@@ -1,7 +1,7 @@
 use crate::slurp;
 
 pub fn execute() {
-    println!("================= DAY 2 ==============");
+    crate::headline::print_day(2);
 
     let lines = slurp::read_lines("src/day2/input.txt")
         .expect("Couldn't get day 2 input");

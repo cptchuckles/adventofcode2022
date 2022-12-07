@@ -1,7 +1,7 @@
 use crate::slurp;
 
 pub fn execute() {
-    println!("================= DAY 1 ==============");
+    crate::headline::print_day(1);
 
     let mut sum = 0u64;
     let mut sums: Vec<u64> = Vec::new();

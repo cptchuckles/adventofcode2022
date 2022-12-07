@@ -1,3 +1,4 @@
+mod headline;
 mod slurp;
 mod day1;
 mod day2;
