@@ -1,11 +1,12 @@
 use crate::slurp;
 
 pub fn execute() {
+    println!("================= DAY 1 ==============");
+
     let mut sum = 0u64;
     let mut sums: Vec<u64> = Vec::new();
 
-    let lines = slurp::read_lines("src/day1/input.txt")
-        .expect("Couldn't get day 1 input");
+    let lines = slurp::read_lines("src/day1/input.txt").expect("Couldn't get day 1 input");
 
     for line in lines {
         let text = line.expect("Not a valid string");
@@ -18,9 +19,6 @@ pub fn execute() {
     }
 
     sums.sort_unstable_by(|a, b| b.cmp(a));
-    println!("Most powerful gnome: {}", &sums[0]);
-    println!(
-        "Three most powerful gnomes combined: {}",
-        sums.iter().take(3).sum::<u64>()
-    );
+    println!("Part 1: {}", &sums[0]);
+    println!("Part 2: {}", sums.iter().take(3).sum::<u64>());
 }
