@@ -91,5 +91,5 @@ fn part_two(mut lines: Enumerate<Iter<String>>, mut stacks: Vec<Vec<char>>) {
         }
     }
 
-    println!("Part 1: {}", tops.iter().collect::<String>());
+    println!("Part 2: {}", tops.iter().collect::<String>());
 }
