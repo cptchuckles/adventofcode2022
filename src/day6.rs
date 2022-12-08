@@ -1,4 +1,4 @@
-use std::{collections::{HashSet, VecDeque}};
+use std::collections::{HashSet, VecDeque};
 use std::str::Chars;
 use std::iter::Enumerate;
 
