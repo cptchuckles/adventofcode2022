@@ -1,3 +1,6 @@
+use std::iter::Enumerate;
+use std::slice::Iter;
+
 pub fn execute() {
     let inputs = crate::start_day::setup(5);
 
@@ -32,6 +35,11 @@ pub fn execute() {
         }
     }
 
+    part_one(lines.clone(), stacks.clone());
+    part_two(lines.clone(), stacks.clone());
+}
+
+fn part_one(mut lines: Enumerate<Iter<String>>, mut stacks: Vec<Vec<char>>) {
     while let Some((_, s)) = lines.next() {
         let m: Vec<u32> = s
             .split_whitespace()
@@ -42,6 +50,36 @@ pub fn execute() {
             if let Some(c) = stacks[m[1] as usize - 1].pop() {
                 stacks[m[2] as usize - 1].push(c);
             }
+        }
+    }
+
+    let mut tops: Vec<char> = Vec::new();
+
+    for stack in stacks {
+        if let Some(c) = stack.last() {
+            tops.push(*c);
+        }
+    }
+
+    println!("Part 1: {}", tops.iter().collect::<String>());
+}
+
+fn part_two(mut lines: Enumerate<Iter<String>>, mut stacks: Vec<Vec<char>>) {
+    while let Some((_, s)) = lines.next() {
+        let m: Vec<u32> = s
+            .split_whitespace()
+            .filter_map(|s| s.parse::<u32>().ok())
+            .collect();
+
+        let from = m[1] as usize - 1;
+        let to = m[2] as usize - 1;
+        let amount = stacks[from].len() - (m[0] as usize);
+
+        let from_clone = stacks[from].clone();
+        let splits = from_clone.split_at(amount);
+        stacks[from] = Vec::from(splits.0);
+        for c in splits.1 {
+            stacks[to].push(*c);
         }
     }
 
