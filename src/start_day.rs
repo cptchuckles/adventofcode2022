@@ -1,20 +1,22 @@
-use std::fs::File;
-use std::io::{self, BufRead};
+use std::fmt::Display;
 use std::path::Path;
 
-fn read_lines<P>(filename: P) -> io::Result<std::io::Lines<io::BufReader<File>>>
+fn read_lines<P>(filename: P) -> Vec<String>
 where
-    P: AsRef<Path>,
+    P: AsRef<Path> + Display,
 {
-    let f = File::open(filename)?;
-    Ok(io::BufReader::new(f).lines())
+    std::fs::read_to_string(&filename)
+        .expect(&format!("Couldn't load file {}", &filename))
+        .lines()
+        .map(|s| s.to_string())
+        .collect()
 }
 
 fn print_day(day: usize) {
     println!("================== DAY {} ==================", day);
 }
 
-pub fn setup(day: usize) -> io::Lines<io::BufReader<File>> {
+pub fn setup(day: usize) -> Vec<String> {
     print_day(day);
-    read_lines(format!("inputs/{}.txt", day)).expect(&format!("Couldn't load inputs for {}", day))
+    read_lines(format!("inputs/{}.txt", day))
 }

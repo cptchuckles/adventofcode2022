@@ -5,8 +5,7 @@ pub fn execute() {
     let mut sums: Vec<u64> = Vec::new();
 
     for line in inputs {
-        let text = line.expect("Not a valid string");
-        if let Ok(number) = text.parse::<u64>() {
+        if let Ok(number) = line.parse::<u64>() {
             sum += number;
         } else {
             sums.push(sum);

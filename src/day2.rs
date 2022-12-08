@@ -19,8 +19,7 @@ pub fn execute() {
     let mut step2_total = 0u32;
 
     for line in inputs {
-        let text = line.expect("Not a valid string");
-        let (other, me) = text.split_once(' ').expect("Malformed input");
+        let (other, me) = line.split_once(' ').expect("Malformed input");
 
         step1_total += step1_scores[me][other];
         step2_total += step2_scores[other][me];
