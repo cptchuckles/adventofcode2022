@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::HashSet;
 
 pub fn execute() {
     let inputs = crate::start_day::setup(3);
@@ -10,24 +10,20 @@ fn execute_part_one(inputs: &Vec<String>) -> u64 {
     let mut total_priorities = 0u64;
 
     for line in inputs {
-        let mut map_a = HashMap::new();
-        let mut map_b = HashMap::new();
+        let mut set_a = HashSet::new();
+        let mut set_b = HashSet::new();
 
         let mut common: Option<char> = None;
 
         let (a, b) = line.split_at(line.len() / 2);
 
         for c in a.chars() {
-            if let Some(count) = map_a.insert(c, 1) {
-                map_a.insert(c, count + 1);
-            }
+            set_a.insert(c);
         }
 
         for c in b.chars() {
-            if let Some(count) = map_b.insert(c, 1) {
-                map_b.insert(c, count + 1);
-            }
-            if let Some(_) = map_a.get(&c) {
+            set_b.insert(c);
+            if set_a.contains(&c) {
                 common = Some(c);
             }
         }
