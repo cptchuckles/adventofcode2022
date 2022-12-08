@@ -17,7 +17,7 @@ pub fn execute() {
             None => panic!("Malformed range"),
         };
 
-        if a.0 <= b.0 && a.1 >= b.1 || b.0 <= a.0 && b.1 >= a.1 {
+        if a.0 <= b.0 && b.1 <= a.1 || b.0 <= a.0 && a.1 <= b.1 {
             encapsulations += 1;
         }
 
