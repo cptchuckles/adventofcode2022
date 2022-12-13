@@ -3,9 +3,21 @@ use std::collections::HashSet;
 pub fn execute() {
     let inputs = crate::start_day::setup(9);
 
-    let mut head = (0i32, 0i32);
-    let mut tail = (0i32, 0i32);
-    let mut tail_positions: HashSet<(i32, i32)> = HashSet::new();
+    let mut snek: [(i32, i32); 10] = [
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+        (0, 0),
+    ];
+
+    let mut tail_positions_1: HashSet<(i32, i32)> = HashSet::new();
+    let mut tail_positions_2: HashSet<(i32, i32)> = HashSet::new();
 
     for input in inputs {
         let head_move = match input.split_once(' ').expect("Malformed input") {
@@ -17,22 +29,31 @@ pub fn execute() {
         };
 
         for _ in head_move.0 {
-            head.0 += head_move.2;
-            tail_follow(&head, &mut tail);
-            tail_positions.insert(tail.clone());
+            snek[0].0 += head_move.2;
+            tail_follow(snek[0], &mut snek[1]);
+            tail_positions_1.insert(snek[1]);
+            for (i, k) in (1..9).zip(2..10) {
+                tail_follow(snek[i], &mut snek[k]);
+            }
+            tail_positions_2.insert(snek[9]);
         }
 
         for _ in head_move.1 {
-            head.1 += head_move.2;
-            tail_follow(&head, &mut tail);
-            tail_positions.insert(tail.clone());
+            snek[0].1 += head_move.2;
+            tail_follow(snek[0], &mut snek[1]);
+            tail_positions_1.insert(snek[1]);
+            for (i, k) in (1..9).zip(2..10) {
+                tail_follow(snek[i], &mut snek[k]);
+            }
+            tail_positions_2.insert(snek[9]);
         }
     }
 
-    println!("Part 1: {}", tail_positions.iter().count());
+    println!("Part 1: {}", tail_positions_1.iter().count());
+    println!("Part 2: {}", tail_positions_2.iter().count());
 }
 
-fn tail_follow(head: &(i32, i32), tail: &mut (i32, i32)) {
+fn tail_follow(head: (i32, i32), tail: &mut (i32, i32)) {
     if (head.0 - tail.0).abs() == 2 {
         tail.0 += (head.0 - tail.0).signum();
         if (head.1 - tail.1).abs() > 0 {
