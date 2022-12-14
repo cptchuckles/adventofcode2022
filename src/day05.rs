@@ -2,7 +2,7 @@ use std::iter::Enumerate;
 use std::slice::Iter;
 
 pub fn execute() {
-    let inputs = crate::start_day::setup(5);
+    let inputs = crate::start_day::setup("05");
 
     let mut stacks: Vec<Vec<char>> = Vec::new();
 

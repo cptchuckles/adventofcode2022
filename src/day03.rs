@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 pub fn execute() {
-    let inputs = crate::start_day::setup(3);
+    let inputs = crate::start_day::setup("03");
 
     println!("Part 1: {}", execute_part_one(&inputs));
     println!("Part 2: {}", execute_part_two(&inputs));

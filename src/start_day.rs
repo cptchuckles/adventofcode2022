@@ -12,11 +12,11 @@ where
         .collect()
 }
 
-fn print_day(day: usize) {
+fn print_day(day: &str) {
     println!("================== DAY {} ==================", day);
 }
 
-pub fn setup(day: usize) -> Vec<String> {
+pub fn setup(day: &str) -> Vec<String> {
     print_day(day);
     read_lines(format!("inputs/{}.txt", day))
 }

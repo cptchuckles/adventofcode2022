@@ -3,7 +3,7 @@ use std::str::Chars;
 use std::iter::Enumerate;
 
 pub fn execute() {
-    let input = crate::start_day::setup(6);
+    let input = crate::start_day::setup("06");
 
     let chars = input[0].chars().enumerate();
 

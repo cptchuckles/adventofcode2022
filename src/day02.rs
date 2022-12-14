@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 pub fn execute() {
-    let inputs = crate::start_day::setup(2);
+    let inputs = crate::start_day::setup("02");
 
     let step1_scores = HashMap::from([
         ("X", HashMap::from([("A", 4), ("B", 1), ("C", 7)])),

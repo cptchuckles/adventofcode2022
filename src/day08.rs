@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 pub fn execute() {
-    let inputs = crate::start_day::setup(8);
+    let inputs = crate::start_day::setup("08");
     let grid = inputs
         .iter()
         .map(|s| s.chars().map(|c| (c as u8) - b'0').collect())

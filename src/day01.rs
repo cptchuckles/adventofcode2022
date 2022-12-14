@@ -1,5 +1,5 @@
 pub fn execute() {
-    let inputs = crate::start_day::setup(1);
+    let inputs = crate::start_day::setup("01");
 
     let mut sum = 0u64;
     let mut sums: Vec<u64> = Vec::new();

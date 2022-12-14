@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 pub fn execute() {
-    let inputs = crate::start_day::setup(9);
+    let inputs = crate::start_day::setup("09");
 
     let mut snek: [(i32, i32); 10] = [
         (0, 0),

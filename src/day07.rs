@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 pub fn execute() {
-    let inputs = crate::start_day::setup(7);
+    let inputs = crate::start_day::setup("07");
 
     let mut dirs: HashMap<String, u64> = HashMap::new();
     let mut pwd = vec!["".to_string()];

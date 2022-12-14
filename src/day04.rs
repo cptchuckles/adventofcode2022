@@ -1,5 +1,5 @@
 pub fn execute() {
-    let inputs = crate::start_day::setup(4);
+    let inputs = crate::start_day::setup("04");
 
     let mut overlaps = 0usize;
     let mut encapsulations = 0usize;
