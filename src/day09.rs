@@ -3,18 +3,7 @@ use std::collections::HashSet;
 pub fn execute() {
     let inputs = crate::start_day::setup("09");
 
-    let mut snek: [(i32, i32); 10] = [
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-        (0, 0),
-    ];
+    let mut snek = [(0i32, 0i32); 10];
 
     let mut tail_positions_1: HashSet<(i32, i32)> = HashSet::new();
     let mut tail_positions_2: HashSet<(i32, i32)> = HashSet::new();

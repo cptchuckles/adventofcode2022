@@ -5,7 +5,7 @@ pub fn execute() {
     let mut x = 1i64;
 
     let mut sum = 0i64;
-    let mut crt: [char; 240] = ['.'; 240];
+    let mut crt = ['.'; 240];
 
     for input in inputs {
         match input.as_str() {
