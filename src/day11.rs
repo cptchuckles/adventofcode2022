@@ -63,7 +63,10 @@ impl Monkey {
                 self.false_to
             };
 
-            throws.push(Throw { to: target, what: item });
+            throws.push(Throw {
+                to: target,
+                what: item,
+            });
         }
 
         throws
@@ -105,33 +108,26 @@ pub fn execute() {
                 item_indices.push(inventory.len() - 1);
             }
 
-            let test_factor = test
-                .split_ascii_whitespace()
-                .last()
-                .unwrap()
-                .parse::<Worry>()
-                .unwrap();
-
-            let true_to = true_to
-                .split_ascii_whitespace()
-                .last()
-                .unwrap()
-                .parse::<usize>()
-                .unwrap();
-
-            let false_to = false_to
-                .split_ascii_whitespace()
-                .last()
-                .unwrap()
-                .parse::<usize>()
-                .unwrap();
-
             monkeys.push(Monkey::new(
                 item_indices,
                 operation.clone(),
-                test_factor,
-                true_to,
-                false_to,
+                test.split_ascii_whitespace()
+                    .last()
+                    .unwrap()
+                    .parse::<Worry>()
+                    .unwrap(),
+                true_to
+                    .split_ascii_whitespace()
+                    .last()
+                    .unwrap()
+                    .parse::<usize>()
+                    .unwrap(),
+                false_to
+                    .split_ascii_whitespace()
+                    .last()
+                    .unwrap()
+                    .parse::<usize>()
+                    .unwrap(),
             ));
         }
     }
@@ -146,5 +142,8 @@ pub fn execute() {
 
     monkeys.sort_by(|a, b| b.business_conducted.cmp(&a.business_conducted));
 
-    println!("Part 1: {}", monkeys[0].business_conducted * monkeys[1].business_conducted);
+    println!(
+        "Part 1: {}",
+        monkeys[0].business_conducted * monkeys[1].business_conducted
+    );
 }
