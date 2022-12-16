@@ -39,14 +39,14 @@ pub fn execute() {
         }
     }
 
-    println!("Part 1: {}", tail_positions_1.iter().count());
-    println!("Part 2: {}", tail_positions_2.iter().count());
+    println!("Part 1: {}", tail_positions_1.len());
+    println!("Part 2: {}", tail_positions_2.len());
 }
 
 fn tail_follow(head: (i32, i32), tail: &mut (i32, i32)) {
     if (head.0 - tail.0).abs() == 2 {
         tail.0 += (head.0 - tail.0).signum();
-        if (head.1 - tail.1).abs() > 0 {
+        if head.1 - tail.1 != 0 {
             tail.1 += (head.1 - tail.1).signum();
         }
         return;
@@ -54,7 +54,7 @@ fn tail_follow(head: (i32, i32), tail: &mut (i32, i32)) {
 
     if (head.1 - tail.1).abs() == 2 {
         tail.1 += (head.1 - tail.1).signum();
-        if (head.0 - tail.0).abs() > 0 {
+        if head.0 - tail.0 != 0 {
             tail.0 += (head.0 - tail.0).signum();
         }
     }
