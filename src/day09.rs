@@ -1,4 +1,5 @@
 use std::collections::HashSet;
+use std::iter::zip;
 
 pub fn execute() {
     let inputs = crate::start_day::setup("09");
@@ -21,7 +22,7 @@ pub fn execute() {
             snek[0].0 += head_move.2;
             tail_follow(snek[0], &mut snek[1]);
             tail_positions_1.insert(snek[1]);
-            for (i, k) in (1..9).zip(2..10) {
+            for (i, k) in zip(1..9, 2..10) {
                 tail_follow(snek[i], &mut snek[k]);
             }
             tail_positions_2.insert(snek[9]);
@@ -31,7 +32,7 @@ pub fn execute() {
             snek[0].1 += head_move.2;
             tail_follow(snek[0], &mut snek[1]);
             tail_positions_1.insert(snek[1]);
-            for (i, k) in (1..9).zip(2..10) {
+            for (i, k) in zip(1..9, 2..10) {
                 tail_follow(snek[i], &mut snek[k]);
             }
             tail_positions_2.insert(snek[9]);
