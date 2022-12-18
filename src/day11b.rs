@@ -8,20 +8,6 @@ struct Throw {
     what: usize,
 }
 
-struct Item {
-    start: Worry,
-    current: Worry,
-}
-
-impl Item {
-    fn new(start: Worry) -> Item {
-        Item {
-            start,
-            current: start,
-        }
-    }
-}
-
 #[derive(Debug)]
 struct Monkey {
     items: HashSet<usize>, // indices into my inventory array
@@ -58,7 +44,7 @@ impl Monkey {
         }
     }
 
-    fn business(&mut self, inventory: &mut Vec<Item>, monkey_factors: &Worry) -> Vec<Throw> {
+    fn business(&mut self, inventory: &mut Vec<Worry>, monkey_factors: &Worry) -> Vec<Throw> {
         let mut throws: Vec<Throw> = Vec::new();
 
         for item in self.items.drain() {
@@ -66,17 +52,17 @@ impl Monkey {
 
             let n = match self.oper.1.parse::<Worry>() {
                 Ok(n) => n,
-                _ => inventory[item].current, // old
+                _ => inventory[item], // old
             };
-            inventory[item].current = match self.oper.0.as_str() {
-                "+" => inventory[item].current + n,
-                "*" => inventory[item].current * n,
+            inventory[item] = match self.oper.0.as_str() {
+                "+" => inventory[item] + n,
+                "*" => inventory[item] * n,
                 _ => panic!("Invalid monkey business attempted"),
             };
 
-            inventory[item].current %= monkey_factors * inventory[item].start;
+            inventory[item] %= monkey_factors;
 
-            let target = if inventory[item].current % self.test_factor == 0 {
+            let target = if inventory[item] % self.test_factor == 0 {
                 self.true_to
             } else {
                 self.false_to
@@ -96,7 +82,7 @@ pub fn execute() {
     let inputs = crate::start_day::setup("11");
     let mut inputs = inputs.iter();
 
-    let mut inventory: Vec<Item> = Vec::new();
+    let mut inventory: Vec<Worry> = Vec::new();
     let mut monkeys: Vec<Monkey> = Vec::new();
     let mut monkey_factors: Worry = 1;
 
@@ -111,7 +97,7 @@ pub fn execute() {
             );
 
             let mut starting_items = items.split(", ");
-            inventory.push(Item::new(
+            inventory.push(
                 starting_items
                     .next()
                     .unwrap()
@@ -120,13 +106,13 @@ pub fn execute() {
                     .unwrap()
                     .parse::<Worry>()
                     .expect("Invalid monkey data: items[0]"),
-            ));
+            );
 
             let mut item_indices = vec![inventory.len() - 1];
             while let Some(item) = starting_items.next() {
-                inventory.push(Item::new(
+                inventory.push(
                     item.parse::<Worry>().expect("Invalid monkey data: item[n]"),
-                ));
+                );
                 item_indices.push(inventory.len() - 1);
             }
 
