@@ -1,45 +1,36 @@
 use std::collections::HashSet;
+use super::monkey::{Throw, Monkey};
+
 
 type Worry = u64;
 
-#[derive(Debug)]
-struct Monkey {
-    items: HashSet<usize>, // indices into my inventory array
-    oper: (String, String),
-    test_factor: Worry,
-    true_to: usize,  // index to monkey to throw to when condition true
-    false_to: usize, // index to monkey to throw to when condition false
-    business_conducted: u64,
-}
-
-#[derive(Debug)]
-struct Throw {
-    to: usize,
-    what: usize,
-}
-
 impl Monkey {
-    fn new(
+    fn new_b(
         item_indices: Vec<usize>,
         operation: String,
         test_factor: Worry,
         true_to: usize,
         false_to: usize,
+        monkey_factors: &mut Worry,
     ) -> Monkey {
+        let operation = match operation.split_once("= old ").unwrap().1.split_once(' ') {
+            Some(oper) => (oper.0.to_string(), oper.1.to_string()),
+            _ => panic!("Invalid monkey business"),
+        };
+
+        *monkey_factors *= test_factor;
+
         Monkey {
             items: HashSet::from_iter(item_indices),
-            oper: match operation.split_once("= old ").unwrap().1.split_once(' ') {
-                Some(oper) => (oper.0.to_string(), oper.1.to_string()),
-                _ => panic!("Invalid monkey business"),
-            },
             test_factor,
+            oper: operation,
             true_to,
             false_to,
             business_conducted: 0,
         }
     }
 
-    fn business(&mut self, inventory: &mut Vec<Worry>) -> Vec<Throw> {
+    fn business_b(&mut self, inventory: &mut Vec<Worry>, monkey_factors: &Worry) -> Vec<Throw> {
         let mut throws: Vec<Throw> = Vec::new();
 
         for item in self.items.drain() {
@@ -55,7 +46,7 @@ impl Monkey {
                 _ => panic!("Invalid monkey business attempted"),
             };
 
-            inventory[item] /= 3;
+            inventory[item] %= monkey_factors;
 
             let target = if inventory[item] % self.test_factor == 0 {
                 self.true_to
@@ -73,12 +64,12 @@ impl Monkey {
     }
 }
 
-pub fn execute() {
-    let inputs = crate::start_day::setup("11");
+pub fn execute(inputs: &Vec<String>) {
     let mut inputs = inputs.iter();
 
     let mut inventory: Vec<Worry> = Vec::new();
     let mut monkeys: Vec<Monkey> = Vec::new();
+    let mut monkey_factors: Worry = 1;
 
     while let Some(input) = inputs.next() {
         if input.starts_with("Monkey") {
@@ -104,11 +95,13 @@ pub fn execute() {
 
             let mut item_indices = vec![inventory.len() - 1];
             while let Some(item) = starting_items.next() {
-                inventory.push(item.parse::<Worry>().expect("Invalid monkey data: item[n]"));
+                inventory.push(
+                    item.parse::<Worry>().expect("Invalid monkey data: item[n]"),
+                );
                 item_indices.push(inventory.len() - 1);
             }
 
-            monkeys.push(Monkey::new(
+            monkeys.push(Monkey::new_b(
                 item_indices,
                 operation.clone(),
                 test.split_ascii_whitespace()
@@ -128,13 +121,14 @@ pub fn execute() {
                     .unwrap()
                     .parse::<usize>()
                     .unwrap(),
+                &mut monkey_factors,
             ));
         }
     }
 
-    for _ in 0..20 {
+    for _ in 0..10000 {
         for m in 0..monkeys.len() {
-            for throw in monkeys[m].business(&mut inventory) {
+            for throw in monkeys[m].business_b(&mut inventory, &monkey_factors) {
                 monkeys[throw.to].items.insert(throw.what);
             }
         }
@@ -143,7 +137,7 @@ pub fn execute() {
     monkeys.sort_by(|a, b| b.business_conducted.cmp(&a.business_conducted));
 
     println!(
-        "Part 1: {}",
+        "Part 2: {}",
         monkeys[0].business_conducted * monkeys[1].business_conducted
     );
 }
