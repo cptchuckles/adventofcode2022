@@ -1,20 +1,28 @@
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone)]
 pub struct Node {
     pub pos: (usize, usize),
     pub parent: Option<(usize, usize)>,
     pub g: u32,
-    pub h: u32,
+    pub h: f32,
 }
 
 impl Node {
-    pub fn new(pos: (usize, usize), parent: Option<(usize, usize)>, g: u32, h: u32) -> Self {
+    pub fn new(pos: (usize, usize), parent: Option<(usize, usize)>, g: u32, h: f32) -> Self {
         Self { pos, parent, g, h }
     }
 
-    pub fn get_f(&self) -> u32 {
-        self.g + self.h
+    pub fn get_f(&self) -> f32 {
+        self.h + self.g as f32
     }
 }
+
+impl PartialEq for Node {
+    fn eq(&self, other: &Self) -> bool {
+        self.pos == other.pos
+    }
+}
+
+impl Eq for Node { }
 
 pub struct Terrain {
     pub grid: Vec<Vec<u8>>,
@@ -55,7 +63,7 @@ impl Terrain {
     }
 
     pub fn make_node(&self, pos: (usize, usize), parent: Option<(usize, usize)>, g: u32) -> Node {
-        Node::new(pos, parent, g, distance_squared(pos, self.goal))
+        Node::new(pos, parent, g, distance(pos, self.goal))
     }
 
     pub fn at(&self, pos: (usize, usize)) -> u8 {
@@ -96,10 +104,12 @@ impl Terrain {
     }
 }
 
-fn distance_squared(a: (usize, usize), b: (usize, usize)) -> u32 {
-    let a0 = a.0 as i32;
-    let a1 = a.1 as i32;
-    let b0 = b.0 as i32;
-    let b1 = b.1 as i32;
-    ((b0 - a0) * (b0 - a0) + (b1 - a1) * (b1 - a1)) as u32
+fn distance(a: (usize, usize), b: (usize, usize)) -> f32 {
+    let a0 = a.0 as f32;
+    let a1 = a.1 as f32;
+    let b0 = b.0 as f32;
+    let b1 = b.1 as f32;
+    let side_a = b0 - a0;
+    let side_b = b1 - a1;
+    ((side_a * side_a) + (side_b * side_b)).sqrt()
 }

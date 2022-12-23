@@ -1,6 +1,6 @@
 mod terrain;
 use self::terrain::{Node, Terrain};
-use std::collections::HashMap;
+use std::{collections::HashMap, cmp::Ordering};
 
 pub fn execute() {
     let terrain = Terrain::from_input(crate::start_day::setup("12"));
@@ -31,10 +31,9 @@ pub fn execute() {
             }
             for (i, node) in fringe.iter().enumerate() {
                 if node.pos == neighbor.pos {
-                    if node.g < neighbor.g {
-                        continue 'neighbors;
+                    if node.g > neighbor.g {
+                        fringe[i] = neighbor;
                     }
-                    fringe[i] = neighbor;
                     continue 'neighbors;
                 }
             }
@@ -43,7 +42,11 @@ pub fn execute() {
 
         closed.insert(current.pos, current);
 
-        fringe.sort_by(|a, b| b.get_f().cmp(&a.get_f()));
+        fringe.sort_by(|a, b| if b.get_f() < a.get_f() {
+            Ordering::Less
+        } else {
+            Ordering::Greater
+        });
     }
 
     println!("Part 1: {}", path_length);
