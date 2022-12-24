@@ -1,31 +1,33 @@
 mod terrain;
 use self::terrain::{Node, Terrain};
-use std::{collections::HashMap, cmp::Ordering};
+use std::cmp::Ordering;
+use std::collections::{HashMap, HashSet};
 
 pub fn execute() {
     let terrain = Terrain::from_input(crate::start_day::setup("12"));
 
+    println!("Part 1: {}", a_star(&terrain));
+    println!("Part 2: {}", dijkstra(&terrain));
+}
+
+fn a_star(terrain: &Terrain) -> u32 {
     let mut fringe: Vec<Node> = Vec::new();
     let mut closed: HashMap<(usize, usize), Node> = HashMap::new();
-    let mut path_length: u32 = u32::MAX;
-    let mut paths: Vec<Vec<(usize, usize)>> = Vec::new();
+    let mut shortest_path: u32 = u32::MAX;
 
     fringe.push(terrain.make_node(terrain.start, None, 0));
 
     while let Some(current) = fringe.pop() {
         if current.pos == terrain.goal {
-            path_length = std::cmp::min(path_length, current.g);
-            let mut path = vec![current.pos];
-            let mut head = current;
-            while let Some(parent) = head.parent {
-                path.push(parent);
-                head = *closed.get(&parent).unwrap();
-            }
-            paths.push(path);
+            shortest_path = std::cmp::min(shortest_path, current.g);
             continue;
         }
 
-        'neighbors: for neighbor in terrain.get_neighbors(current) {
+        'neighbors: for &neighbor in terrain
+            .get_neighbors(current)
+            .iter()
+            .filter(|n| terrain.at(n.pos) <= terrain.at(current.pos) + 1)
+        {
             if closed.contains_key(&neighbor.pos) {
                 continue;
             }
@@ -42,12 +44,45 @@ pub fn execute() {
 
         closed.insert(current.pos, current);
 
-        fringe.sort_by(|a, b| if b.get_f() < a.get_f() {
-            Ordering::Less
-        } else {
-            Ordering::Greater
+        fringe.sort_by(|a, b| {
+            if b.get_f() < a.get_f() {
+                Ordering::Less
+            } else {
+                Ordering::Greater
+            }
         });
     }
 
-    println!("Part 1: {}", path_length);
+    shortest_path
+}
+
+fn dijkstra(terrain: &Terrain) -> u32 {
+    let mut fringe: Vec<Node> = Vec::new();
+    let mut closed: HashSet<(usize, usize)> = HashSet::new();
+    let mut shortest_path = u32::MAX;
+
+    fringe.push(Node::new(terrain.goal, None, 0, 0.0));
+
+    while let Some(current) = fringe.pop() {
+        if terrain.at(current.pos) == 0 {
+            shortest_path = std::cmp::min(shortest_path, current.g);
+            continue;
+        }
+
+        for &neighbor in terrain
+            .get_neighbors(current)
+            .iter()
+            .filter(|n| terrain.at(n.pos) >= terrain.at(current.pos) - 1)
+        {
+            if closed.insert(neighbor.pos) {
+                fringe.push(neighbor);
+            }
+        }
+
+        closed.insert(current.pos);
+
+        fringe.sort_by(|a, b| b.g.cmp(&a.g));
+    }
+
+    shortest_path
 }

@@ -22,7 +22,7 @@ impl PartialEq for Node {
     }
 }
 
-impl Eq for Node { }
+impl Eq for Node {}
 
 pub struct Terrain {
     pub grid: Vec<Vec<u8>>,
@@ -73,31 +73,21 @@ impl Terrain {
     pub fn get_neighbors(&self, node: Node) -> Vec<Node> {
         let mut neighbors: Vec<Node> = Vec::new();
 
-        let height = self.at(node.pos);
-
         if node.pos.0 > 0 {
             let new_pos = (node.pos.0 - 1, node.pos.1);
-            if self.at(new_pos) <= height + 1 {
-                neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
-            }
+            neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
         }
         if node.pos.1 > 0 {
             let new_pos = (node.pos.0, node.pos.1 - 1);
-            if self.at(new_pos) <= height + 1 {
-                neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
-            }
+            neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
         }
         if node.pos.0 < self.grid.len() - 1 {
             let new_pos = (node.pos.0 + 1, node.pos.1);
-            if self.at(new_pos) <= height + 1 {
-                neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
-            }
+            neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
         }
         if node.pos.1 < self.grid[0].len() - 1 {
             let new_pos = (node.pos.0, node.pos.1 + 1);
-            if self.at(new_pos) <= height + 1 {
-                neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
-            }
+            neighbors.push(self.make_node(new_pos, Some(node.pos), node.g + 1));
         }
 
         neighbors
