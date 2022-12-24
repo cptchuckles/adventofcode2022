@@ -1,7 +1,7 @@
 mod terrain;
 use self::terrain::{Node, Terrain};
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 pub fn execute() {
     let terrain = Terrain::from_input(crate::start_day::setup("12"));
@@ -12,7 +12,7 @@ pub fn execute() {
 
 fn a_star(terrain: &Terrain) -> u32 {
     let mut fringe: Vec<Node> = Vec::new();
-    let mut closed: HashMap<(usize, usize), Node> = HashMap::new();
+    let mut closed: HashSet<(usize, usize)> = HashSet::new();
     let mut shortest_path: u32 = u32::MAX;
 
     fringe.push(terrain.make_node(terrain.start, None, 0));
@@ -28,7 +28,7 @@ fn a_star(terrain: &Terrain) -> u32 {
             .iter()
             .filter(|n| terrain.at(n.pos) <= terrain.at(current.pos) + 1)
         {
-            if closed.contains_key(&neighbor.pos) {
+            if closed.contains(&neighbor.pos) {
                 continue;
             }
             for (i, node) in fringe.iter().enumerate() {
@@ -42,7 +42,7 @@ fn a_star(terrain: &Terrain) -> u32 {
             fringe.push(neighbor);
         }
 
-        closed.insert(current.pos, current);
+        closed.insert(current.pos);
 
         fringe.sort_by(|a, b| {
             if b.get_f() < a.get_f() {
