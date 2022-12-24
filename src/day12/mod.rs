@@ -1,6 +1,5 @@
 mod terrain;
 use self::terrain::{Node, Terrain};
-use std::cmp::Ordering;
 use std::collections::HashSet;
 
 pub fn execute() {
@@ -45,11 +44,9 @@ fn a_star(terrain: &Terrain) -> u32 {
         closed.insert(current.pos);
 
         fringe.sort_by(|a, b| {
-            if b.get_f() < a.get_f() {
-                Ordering::Less
-            } else {
-                Ordering::Greater
-            }
+            b.get_f()
+                .partial_cmp(&a.get_f())
+                .expect("Floating point comparison failed inexplicably")
         });
     }
 
@@ -61,7 +58,7 @@ fn dijkstra(terrain: &Terrain) -> u32 {
     let mut closed: HashSet<(usize, usize)> = HashSet::new();
     let mut shortest_path = u32::MAX;
 
-    fringe.push(Node::new(terrain.goal, None, 0, 0.0));
+    fringe.push(terrain.make_node(terrain.goal, None, 0));
 
     while let Some(current) = fringe.pop() {
         if terrain.at(current.pos) == 0 {
