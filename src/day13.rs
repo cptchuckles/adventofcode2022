@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash, Eq, PartialEq)]
 enum Item {
     List(Vec<Item>),
     Number(usize),
@@ -9,6 +9,12 @@ enum Item {
 pub fn execute() {
     let inputs = crate::start_day::setup("13");
 
+    println!("Part 1: {}", part_1(&inputs));
+
+    println!("Part 2: {}", part_2(&inputs));
+}
+
+fn part_1(inputs: &Vec<String>) -> usize {
     let mut correct_indices: Vec<usize> = Vec::new();
 
     for (i, pair) in inputs.split(|s| s.len() == 0).enumerate() {
@@ -24,9 +30,42 @@ pub fn execute() {
         }
     }
 
-    let sum = correct_indices.iter().sum::<usize>();
+    correct_indices.iter().sum::<usize>()
+}
 
-    println!("Part 1: {}", sum);
+fn part_2(inputs: &Vec<String>) -> usize {
+    let mut packets: Vec<Item> = inputs
+        .iter()
+        .filter_map(|line| {
+            if line.len() == 0 {
+                return None;
+            }
+            Some(parse_recursively(line).first().unwrap().clone())
+        })
+        .collect();
+
+    let two = parse_recursively("[[2]]".into()).first().unwrap().clone();
+    let six = parse_recursively("[[6]]".into()).first().unwrap().clone();
+    packets.push(two.clone());
+    packets.push(six.clone());
+
+    packets.sort_by(|a, b| compare_items(a.clone(), b.clone()));
+
+    let (mut itwo, mut isix) = (None, None);
+
+    for (i, packet) in packets.iter().enumerate() {
+        if itwo.is_none() && *packet == two {
+            itwo = Some(i + 1);
+        }
+        else if isix.is_none() && *packet == six {
+            isix = Some(i + 1);
+        }
+        else if itwo.is_some() && isix.is_some() {
+            break;
+        }
+    }
+
+    itwo.unwrap() * isix.unwrap()
 }
 
 fn compare_items(first: Item, second: Item) -> Ordering {
@@ -39,9 +78,7 @@ fn compare_items(first: Item, second: Item) -> Ordering {
                     (None, None) => return Ordering::Equal,
                     (None, Some(_)) => Ordering::Less,
                     (Some(_), None) => Ordering::Greater,
-                    (Some(a), Some(b)) => {
-                        compare_items(a.clone(), b.clone())
-                    }
+                    (Some(a), Some(b)) => compare_items(a.clone(), b.clone()),
                 };
                 if ret.is_eq() {
                     continue;
