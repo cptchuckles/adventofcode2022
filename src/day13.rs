@@ -17,18 +17,8 @@ pub fn execute() {
         let first = parse_recursively(first_line).first().unwrap().clone();
         let second = parse_recursively(second_line).first().unwrap().clone();
 
-        // println!("Found pair:");
-        // println!("  {}", first_line);
-        // println!("\t{:?}", first);
-        // println!("  {}", second_line);
-        // println!("\t{:?}", second);
-
-        // println!("Comparing sets:");
-        // println!("\t{:?}", first);
-        // println!("\t{:?}", second);
-
         let result = compare_items(first, second);
-        // println!("  Result: {:?}", result);
+
         if result.is_lt() {
             correct_indices.push(i + 1);
         }
@@ -36,14 +26,10 @@ pub fn execute() {
 
     let sum = correct_indices.iter().sum::<usize>();
 
-    // println!("Part 1: {} ({:?})", sum, correct_indices);
     println!("Part 1: {}", sum);
 }
 
 fn compare_items(first: Item, second: Item) -> Ordering {
-    // println!("    Internal comparing sets:");
-    // println!("\t{:?}", first);
-    // println!("\t{:?}", second);
     let result = match (first, second) {
         // List vs List
         (Item::List(f), Item::List(s)) => {
@@ -77,7 +63,7 @@ fn compare_items(first: Item, second: Item) -> Ordering {
         // Number vs Number
         (Item::Number(f), Item::Number(s)) => f.cmp(&s),
     };
-    // println!("\tInterim Result: {:?}", result);
+
     result
 }
 
@@ -95,7 +81,6 @@ fn parse_recursively(set: &str) -> Vec<Item> {
             '[' => {
                 let mut lookahead = i;
                 let mut depth = 1;
-                // println!("Set: {}", set);
                 while depth > 0 {
                     lookahead += 1;
                     match set.chars().nth(lookahead).expect("Bounds error") {
