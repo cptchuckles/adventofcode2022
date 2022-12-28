@@ -11,6 +11,7 @@ mod day09;
 mod day10;
 mod day11;
 mod day12;
+mod day13;
 
 fn main() {
     println!("Advent of Code 2022");
@@ -26,4 +27,5 @@ fn main() {
     day10::execute();
     day11::execute();
     day12::execute();
+    day13::execute();
 }
