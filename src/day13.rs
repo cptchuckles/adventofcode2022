@@ -30,7 +30,7 @@ fn part_1(inputs: &Vec<String>) -> usize {
         }
     }
 
-    correct_indices.iter().sum::<usize>()
+    correct_indices.iter().sum()
 }
 
 fn part_2(inputs: &Vec<String>) -> usize {
