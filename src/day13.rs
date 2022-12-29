@@ -80,10 +80,9 @@ fn compare_items(first: &Item, second: &Item) -> Ordering {
                     (Some(_), None) => Ordering::Greater,
                     (Some(a), Some(b)) => compare_items(a, b),
                 };
-                if ret.is_eq() {
-                    continue;
+                if ret.is_ne() {
+                    return ret;
                 }
-                return ret;
             }
         }
 
@@ -117,7 +116,9 @@ fn parse_recursively(set: &str) -> Vec<Item> {
                         ']' => {
                             depth -= 1;
                             if depth == 0 {
-                                list.push(Item::List(parse_recursively(&set[(i + 1)..j])));
+                                let inner_set = &set[(i + 1)..j];
+                                let inner_list = parse_recursively(inner_set);
+                                list.push(Item::List(inner_list));
                                 starti = j + 1;
                                 break;
                             }
