@@ -20,8 +20,8 @@ fn part_1(inputs: &Vec<String>) -> usize {
     for (i, pair) in inputs.split(|s| s.len() == 0).enumerate() {
         let first_line = pair.first().expect("No first list");
         let second_line = pair.last().expect("No second list");
-        let first = parse_recursively(first_line).first().unwrap().clone();
-        let second = parse_recursively(second_line).first().unwrap().clone();
+        let first = parse_recursively(first_line).first().unwrap().to_owned();
+        let second = parse_recursively(second_line).first().unwrap().to_owned();
 
         let result = compare_items(&first, &second);
 
@@ -40,14 +40,14 @@ fn part_2(inputs: &Vec<String>) -> usize {
             if line.len() == 0 {
                 return None;
             }
-            Some(parse_recursively(line).first().unwrap().clone())
+            Some(parse_recursively(line).first().unwrap().to_owned())
         })
         .collect();
 
-    let two = parse_recursively("[[2]]".into()).first().unwrap().clone();
-    let six = parse_recursively("[[6]]".into()).first().unwrap().clone();
-    packets.push(two.clone());
-    packets.push(six.clone());
+    let two = parse_recursively("[[2]]".into()).first().unwrap().to_owned();
+    let six = parse_recursively("[[6]]".into()).first().unwrap().to_owned();
+    packets.push(two.to_owned());
+    packets.push(six.to_owned());
 
     packets.sort_by(|a, b| compare_items(a, b));
 
@@ -88,14 +88,10 @@ fn compare_items(first: &Item, second: &Item) -> Ordering {
         }
 
         // List vs Number
-        (Item::List(f), Item::Number(s)) => {
-            compare_items(&Item::List(f.clone()), &Item::List(vec![Item::Number(*s)]))
-        }
+        (Item::List(_), Item::Number(_)) => compare_items(first, &Item::List(vec![second.clone()])),
 
         // Number vs List
-        (Item::Number(f), Item::List(s)) => {
-            compare_items(&Item::List(vec![Item::Number(*f)]), &Item::List(s.clone()))
-        }
+        (Item::Number(_), Item::List(_)) => compare_items(&Item::List(vec![first.clone()]), second),
 
         // Number vs Number
         (Item::Number(f), Item::Number(s)) => f.cmp(&s),
@@ -103,7 +99,7 @@ fn compare_items(first: &Item, second: &Item) -> Ordering {
 }
 
 fn parse_recursively(set: &str) -> Vec<Item> {
-    if let Ok(n) = set.parse::<usize>() {
+    if let Ok(n) = set.parse() {
         return vec![Item::Number(n)];
     }
 
@@ -128,8 +124,8 @@ fn parse_recursively(set: &str) -> Vec<Item> {
                 i = lookahead;
                 starti = lookahead + 1;
             }
-            ',' | ']' => {
-                if let Ok(n) = set[starti..i].parse::<usize>() {
+            ',' => {
+                if let Ok(n) = set[starti..i].parse() {
                     list.push(Item::Number(n));
                 }
                 starti = i + 1;
