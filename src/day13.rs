@@ -105,24 +105,26 @@ fn parse_recursively(set: &str) -> Vec<Item> {
 
     let mut list: Vec<Item> = Vec::new();
 
-    let mut i = 0usize;
     let mut starti = 0usize;
-    while i < set.len() {
-        match set.chars().nth(i).expect("Bounds error") {
+    let mut setchars = set.chars().enumerate();
+    while let Some((i, c)) = setchars.next() {
+        match c {
             '[' => {
-                let mut lookahead = i;
                 let mut depth = 1;
-                while depth > 0 {
-                    lookahead += 1;
-                    match set.chars().nth(lookahead).expect("Bounds error") {
+                while let Some((j, c)) = setchars.next() {
+                    match c {
                         '[' => depth += 1,
-                        ']' => depth -= 1,
+                        ']' => {
+                            depth -= 1;
+                            if depth == 0 {
+                                list.push(Item::List(parse_recursively(&set[(i + 1)..j])));
+                                starti = j + 1;
+                                break;
+                            }
+                        }
                         _ => (),
                     }
                 }
-                list.push(Item::List(parse_recursively(&set[(i + 1)..lookahead])));
-                i = lookahead;
-                starti = lookahead + 1;
             }
             ',' => {
                 if let Ok(n) = set[starti..i].parse() {
@@ -132,13 +134,10 @@ fn parse_recursively(set: &str) -> Vec<Item> {
             }
             _ => (),
         }
-        i += 1;
     }
 
-    if starti < i {
-        if let Ok(n) = set[starti..i].parse::<usize>() {
-            list.push(Item::Number(n));
-        }
+    if let Ok(n) = set[starti..].parse() {
+        list.push(Item::Number(n));
     }
 
     list
