@@ -17,12 +17,12 @@ pub fn execute() {
                 },
                 _ => (), // ls
             },
-            sz => if let Ok(sz) = sz.parse::<u64>() {
-                let mut path = pwd.clone();
-                while let Some(basename) = path.pop() {
-                    let pathstr = path.join("/") + "/" + &basename;
-                    if let Some(current_sz) = dirs.insert(pathstr.clone(), sz) {
-                        dirs.insert(pathstr, current_sz + sz);
+            size => {
+                if let Ok(size) = size.parse::<u64>() {
+                    for (i, basename) in pwd.iter().enumerate().rev() {
+                        dirs.entry(pwd[..i].join("/") + "/" + basename)
+                            .and_modify(|old_size| *old_size += size)
+                            .or_insert(size);
                     }
                 }
             }
