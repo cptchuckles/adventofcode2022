@@ -52,16 +52,17 @@ fn part_2(inputs: &Vec<String>) -> usize {
     packets.sort_by(|a, b| compare_items(a, b));
 
     let mut itwo = None;
+
     for (i, packet) in packets.iter().enumerate() {
         if itwo.is_none() && *packet == two {
             itwo = Some(i + 1);
         }
         else if *packet == six {
-            return itwo.expect("How did it come to this?") * (i + 1);
+            return itwo.expect("Must have found itwo by now") * (i + 1);
         }
     }
 
-    unreachable!("What a travesty")
+    unreachable!("How did it come to this?");
 }
 
 fn compare_items(first: &Item, second: &Item) -> Ordering {
